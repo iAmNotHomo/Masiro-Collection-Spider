@@ -1,0 +1,4 @@
+我的收藏
+https://masiro.me/admin/loadMoreNovels?page=1&collection=1
+https://masiro.me/admin/novels?collection=1
+page=n, collection=1
