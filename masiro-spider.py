@@ -68,7 +68,7 @@ async def session_try_get(session, url, headers, params={}):
         except Exception as e:
             print(e)
             if i < TRY_TIMES - 1:
-                print('retrying url:' + url)
+                print('retrying url:', url)
             else:
                 with open(ERROR_LOG_DIR, mode='a', encoding='utf-8') as log:
                     log.write(url + '\n')
@@ -126,15 +126,31 @@ async def save_chapter_text(file_path, chapter_text):
 
 async def save_chapter_pic(session, file_path, chapter_pic):
     for i in range(len(chapter_pic)):
-        full_file_path = file_path + '-' + str(i) + '.jpeg'
+        if chapter_pic[i].startswith('static'):
+            continue
+        if chapter_pic[i].find('m.qpic.cn/psc') != -1:
+            continue
+
+        file_type = ''
+        if chapter_pic[i].find('.googleusercontent.com/') != -1:
+            file_type = 'png'
+        elif chapter_pic[i].find('m.qpic.cn') != -1:
+            file_type = 'webp'
+        else:
+            file_type = chapter_pic[i].split('?',1)[0].rsplit('.',1)[1]
+
+        full_file_path = file_path + '-' + str(i) + '.' + file_type
+
         if os.path.exists(full_file_path) and not UPDATE_PIC:
             continue
+
         async with aiofiles.open(full_file_path, mode='wb') as file:
             response = await session_try_get(session, chapter_pic[i], HEADERS)
             if not response:
                 return
             pic_data = await response.read()
             await file.write(pic_data)
+
         print(full_file_path + ' downloaded.')
 
 
@@ -219,7 +235,8 @@ async def download_book(session, book_url, thread_count):
                     'payed': chapter_payed[i]
                 }
                 chapter_download_tasks.append(download_chapter(session, section_dir, chapter_dict))
-            _,_ = await asyncio.wait(chapter_download_tasks)
+            if chapter_download_tasks:
+                _,_ = await asyncio.wait(chapter_download_tasks)
 
             section_NO += 1
             section_name = html_tree.xpath(XPATH_SECTIONS_NAME_IN_BOOK % section_NO)
