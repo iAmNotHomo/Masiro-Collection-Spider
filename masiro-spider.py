@@ -134,12 +134,12 @@ async def base():
 
     async with aiohttp.ClientSession() as session:
         await login(session)
-        await download_collection(session, START_PAGE, END_PAGE)
+        await download_collection(session)
 
-async def download_collection(session, start_page, end_page): # 从收藏页/排行榜页中，获取小说详情页的url
+async def download_collection(session): # 从收藏页/排行榜页中，获取小说详情页的url
     book_url = []
 
-    for i in range(start_page, end_page+1):
+    for i in range(START_PAGE, END_PAGE+1):
         page_params = {
             'page': i,
             'collection': 1
@@ -176,10 +176,8 @@ async def download_collection(session, start_page, end_page): # 从收藏页/排
 
     thread_count = asyncio.Semaphore(MAX_THREAD)
 
-    book_download_tasks = [] # 异步任务列表
     for url in book_url:
-        book_download_tasks.append(download_book(session, url, thread_count))
-    await asyncio.wait(book_download_tasks)
+        await download_book(session, url, thread_count)
 
 async def download_book(session, book_url, thread_count):
     book_full_url = MASIRO + book_url
@@ -216,7 +214,6 @@ async def download_book(session, book_url, thread_count):
             chapter_payed = html_tree.xpath(XPATH_CHAPTERS_PAYED_IN_BOOK % section_NO)
 
             # 下载分卷中的章节
-            chapter_download_tasks = []
             for i in range(len(chapter_url)):
                 chapter_dict = {
                     'NO': i+1,
@@ -224,10 +221,8 @@ async def download_book(session, book_url, thread_count):
                     'url': chapter_url[i],
                     'cost': chapter_cost[i],
                     'payed': chapter_payed[i]
-                    # 我也想写paid, 但是html里就是payed. 避免混淆的权宜之计.
                 }
-                chapter_download_tasks.append(download_chapter(session, section_dir, chapter_dict))
-            await asyncio.wait(chapter_download_tasks)
+                await download_chapter(session, section_dir, chapter_dict)
         
             section_NO += 1
             section_name = html_tree.xpath(XPATH_SECTIONS_NAME_IN_BOOK % section_NO)
