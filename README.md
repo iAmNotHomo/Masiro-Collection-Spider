@@ -12,11 +12,11 @@ Masiro-Spider
 - 暂不支持自动点赞。
 
 ## 环境
-python 3.6 ~ 3.10 (使用了3.11中被取消的方法)
-安装aiohttp, aiofiles, lxml, 以及脚本运行时提示依赖的库
+- python 3.6 ~ 3.10 (使用了3.11中被取消的方法)
+- 安装aiohttp, aiofiles, lxml, 以及脚本运行时提示依赖的库
 
 ## 参考
-通用轻小说网站爬虫工具 https://github.com/ilusrdbb/lightnovel-pydownloader
-异步http请求aiohttp模块讲解 BV1YM411s72j BV1sT411a76H
-异步爬虫实战 BV1W54y1M7un BV1ax4y1T77x
-Xpath语法 BV1j7411d7s9
+- 通用轻小说网站爬虫工具 https://github.com/ilusrdbb/lightnovel-pydownloader
+- 异步http请求aiohttp模块讲解 BV1YM411s72j BV1sT411a76H
+- 异步爬虫实战 BV1W54y1M7un BV1ax4y1T77x
+- Xpath语法 BV1j7411d7s9
