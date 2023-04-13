@@ -6,11 +6,12 @@ FILE_DIR = 'E:\\books\\'
 ERROR_LOG_DIR = FILE_DIR + 'failed.log'
 SKIP_LOG_DIR = FILE_DIR + 'skipped.log'
 
-USER_NAME = 'dyzer@qq.com'
-PASSWORD = 'D142857ing'
+USER_NAME = ''
+PASSWORD = ''
 
-# 爬取收藏页的起始页数
+# 爬取收藏页的起止页数
 # 一页30本
+# 如需爬取所有收藏的小说，尾页可填999
 START_PAGE = 1
 END_PAGE = 2
 
