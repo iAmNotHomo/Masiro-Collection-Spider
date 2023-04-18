@@ -1,17 +1,16 @@
 import asyncio, aiohttp, aiofiles
 from lxml import html
-import random, os
+import random, os, zhconv
 
-FILE_DIR = 'E:\\books\\'
+FILE_DIR = 'D:\\books\\masiro\\'
 ERROR_LOG_DIR = FILE_DIR + 'failed.log'
 SKIP_LOG_DIR = FILE_DIR + 'skipped.log'
 
-USER_NAME = ''
-PASSWORD = ''
+USER_NAME = 'dyzer@qq.com'
+PASSWORD = 'D142857ing'
 
-# 爬取收藏页的起止页数
+# 爬取收藏页的起始页数
 # 一页30本
-# 如需爬取所有收藏的小说，尾页可填999
 START_PAGE = 1
 END_PAGE = 2
 
@@ -49,8 +48,8 @@ HEADERS = {
 MASIRO = 'https://masiro.me'
 MASIRO_COLLECTION = MASIRO + '/admin/loadMoreNovels'
 MASIRO_LOGIN = MASIRO + '/admin/auth/login'
-XPATH_LOGIN = '//input[@class=\'csrf\']/@value'
-XPATH_BOOKS_URL_IN_PAGE = '//div[@class=\'layui-card\']/a[1]/@href' # 在“收藏页/排行榜页”的html中，指向“小说详情页url”的路径
+XPATH_LOGIN = '//input[@class="csrf"]/@value'
+XPATH_BOOKS_URL_IN_PAGE = '//div[@class="layui-card"]/a[1]/@href' # 在“收藏页/排行榜页”的html中，指向“小说详情页url”的路径
 XPATH_BOOK_NAME_IN_BOOK = '//title/text()'
 XPATH_SECTIONS_NAME_IN_BOOK = '//div[@class="chapter-content"]//li[@id][%d]/@id'
 XPATH_CHAPTERS_IN_BOOK = '//div[@class="chapter-content"]//li[not(@class)][%d]//a'
@@ -121,7 +120,8 @@ async def save_chapter_text(file_path, chapter_text):
         return
     async with aiofiles.open(full_file_path, mode='w', encoding='utf-8') as file:
         for paragraph in chapter_text:
-            await file.write(paragraph)
+            simplified_paragraph = zhconv.convert(paragraph, 'zh-hans')
+            await file.write(simplified_paragraph)
     print(full_file_path + ' downloaded.')
 
 
@@ -155,6 +155,10 @@ async def save_chapter_pic(session, file_path, chapter_pic):
         print(full_file_path + ' downloaded.')
 
 
+async def purchase_chapter(session, chapter_url):
+    pass # 打钱不会写捏, 没想到吧
+
+
 async def download_chapter(session, file_path, chapter_dict):
     # chapter_dict = {'NO','name','url','cost','payed'}
 
@@ -162,20 +166,20 @@ async def download_chapter(session, file_path, chapter_dict):
     chapter_payed = int(chapter_dict['payed'])
     chapter_full_url = MASIRO + chapter_dict['url']
 
-    if not PURCHASE and chapter_cost > 0:
-        chapter_skiped(chapter_full_url)
-        return
-    if PURCHASE and chapter_cost > MAX_COST and not chapter_payed:
-    # 保留 PURCHASE 条件, 制造逻辑短路
-        chapter_skiped(chapter_full_url)
-        return
+    if not chapter_payed:
+        if chapter_cost > MAX_COST:
+            chapter_skiped(chapter_full_url)
+            return
+        if not PURCHASE and chapter_cost:
+            chapter_skiped(chapter_full_url)
+            return
     
     chapter_file_path = file_path + str(chapter_dict['NO']) + '. ' + chapter_dict['name']
 
     await asyncio.sleep(random.random() * SLEEP_TIME)
 
-    if PURCHASE and chapter_cost <= MAX_COST:
-        return # 打钱不会写捏, 没想到吧
+    if PURCHASE and chapter_cost and not chapter_payed:
+        purchase_chapter(session, chapter_full_url)
     
     response = await session_try_get(session, chapter_full_url, HEADERS)
     if not response:
@@ -305,6 +309,7 @@ async def login(session):
 
     response = await session_try_get(session, MASIRO_LOGIN, HEADERS)
     if not response:
+        print('')
         exit('login failed.')
     page_html = await response.text()
     token = use_xpath(page_html, XPATH_LOGIN)
