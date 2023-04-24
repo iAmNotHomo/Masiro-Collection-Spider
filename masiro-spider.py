@@ -6,8 +6,8 @@ FILE_DIR = 'D:\\books\\masiro\\'
 ERROR_LOG_DIR = FILE_DIR + 'failed.log'
 SKIP_LOG_DIR = FILE_DIR + 'skipped.log'
 
-USER_NAME = 'dyzer@qq.com'
-PASSWORD = 'D142857ing'
+USER_NAME = ''
+PASSWORD = ''
 
 # 爬取收藏页的起始页码, 从1开始数
 # 一页30本
