@@ -1,6 +1,9 @@
 # 真白萌爬虫
 Masiro-Spider的部分功能仍在开发阶段...
 
+许多地方参考了这个项目：https://github.com/ilusrdbb/lightnovel-pydownloader
+他的缺点是只能爬取真白萌排行榜，而不能爬取用户收藏。我的程序正好相反。
+
 ## 功能
 模拟登录，将用户收藏的小说下载到本地。
 - 采用异步操作，效率较高；
