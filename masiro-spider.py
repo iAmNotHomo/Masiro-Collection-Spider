@@ -6,33 +6,37 @@ FILE_DIR = 'D:\\books\\masiro\\'
 ERROR_LOG_DIR = FILE_DIR + 'failed.log'
 SKIP_LOG_DIR = FILE_DIR + 'skipped.log'
 
-USER_NAME = ''
-PASSWORD = ''
+USER_NAME = 'dyzer@qq.com'
+PASSWORD = 'D142857ing'
 
-# 爬取收藏页的起始页数
+# 爬取收藏页的起始页码, 从1开始数
 # 一页30本
 START_PAGE = 1
-END_PAGE = 2
+END_PAGE = 2 # 如果要爬取所有收藏, 可以填999
 
-# 单个请求连接超时的阈值时间
-TIME_OUT = 16
+# 一次请求等这么久还没收到服务器回复, 就重发请求
+TIME_OUT = 16 # 秒
 
-# 连接尝试的次数
+# 试了这么多次还连不上服务器, 就放弃
 TRY_TIMES = 4
 
 # 请求延迟时间 = random() * SLEEP_TIME
-SLEEP_TIME = 4
+SLEEP_TIME = 4 # 秒
 
-# 是否购买付费章节
-# if PURCHASE and (价格 <= MAX_COST): 购买该章节
-PURCHASE = False
-MAX_COST = 0
+# 遇到付费章节, if PURCHASE and (价格 <= MAX_COST): 购买该章节
+PURCHASE = False # 是否购买付费章节
+MAX_COST = 0 # 价格高于这个数, 就不买
 
+# 并发数量
 MAX_THREAD = 8
 
-# UPDATE_COVER = False
+# 是否更新封面图(还没实现)/小说文本/小说插图
+UPDATE_COVER = False
 UPDATE_TEXT = False
 UPDATE_PIC = False
+
+
+# 下面的都不用改
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
 ACCEPT = '*/*'
@@ -48,6 +52,7 @@ HEADERS = {
 MASIRO = 'https://masiro.me'
 MASIRO_COLLECTION = MASIRO + '/admin/loadMoreNovels'
 MASIRO_LOGIN = MASIRO + '/admin/auth/login'
+
 XPATH_LOGIN = '//input[@class="csrf"]/@value'
 XPATH_BOOKS_URL_IN_PAGE = '//div[@class="layui-card"]/a[1]/@href' # 在“收藏页/排行榜页”的html中，指向“小说详情页url”的路径
 XPATH_BOOK_NAME_IN_BOOK = '//title/text()'
