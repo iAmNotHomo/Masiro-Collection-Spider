@@ -3,17 +3,17 @@ from lxml import html
 import random, os, zhconv, time, functools
 
 FILE_DIR = 'D:\\books\\masiro\\'
-USER_NAME = 'dyzer@qq.com'
-PASSWORD = 'D142857ing'
+USER_NAME = ''
+PASSWORD = ''
 
 MODE_USE_LOCAL_BOOK_LIST = 0 # 使用以前保存到本地的书单
 MODE_UPDATE_BOOK_LIST = 1 # 更新书单并使用
-MODE = MODE_USE_LOCAL_BOOK_LIST # 设置爬虫的运行模式。首次运行时，需要设置为 MODE_UPDATE_BOOK_LIST
+MODE = MODE_UPDATE_BOOK_LIST # 设置爬虫的运行模式。首次运行时，需要设置为 MODE_UPDATE_BOOK_LIST
 
 # 爬取收藏页的起始页码, 从1开始数
 # 一页30本
 START_PAGE = 1
-END_PAGE = 2 # 如果要爬取所有收藏, 可以填999
+END_PAGE = 999 # 如果要爬取所有收藏, 可以填999
 
 # 一次请求等这么久还没收到服务器回复, 就重发请求
 TIME_OUT = 16 # 秒
